@@ -1,14 +1,6 @@
----
-title: 'Prioritize'
----
-
-Prioritize
-===
 **Prioritize** is an app will allow people to prioritize their work, assignments, or tasks based on which tasks have a higher priority and list them accordingly
 
 ## Table of Contents
-
-[TOC]
 
 
 ## Overview
