@@ -64,7 +64,6 @@ Prioritize
    * ...
 
 ## Wireframes
-[Add picture of your hand sketched wireframes in this section]
 ![](https://i.imgur.com/RGv9Wky.png)
 ![](https://i.imgur.com/jGJtcEO.png)
 
