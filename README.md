@@ -1,11 +1,5 @@
 **Prioritize** is an app will allow people to prioritize their work, assignments, or tasks based on which tasks have a higher priority and list them accordingly
 
-## Table of Contents
-
-
-## Overview
-
-
 ### App Evaluation
 
 - **Category:** Task Manager, Productivity
@@ -49,20 +43,26 @@
 **Flow Navigation** (Screen to Screen)
 
 * Home Screen
-   * Will show list
-   * ...
-* [list second screen here]
-   * [list screen navigation here]
-   * ...
+   * Will show list of Tasks
+   * Long click on each Task to edit, mark as complete, or delete.
+* Edit screen
+   * Will be where you edit a task for priority or due date.
+* Task Screen
+    * Where task will be created to add to home screen
+* Action Bar
+    * Setting button to change sort technique.
+* Settings Screen
+    * allow sort to be changed
 
 ## Wireframes
-![](https://i.imgur.com/RGv9Wky.png)
-![](https://i.imgur.com/jGJtcEO.png)
+![](https://i.imgur.com/eQCGNui.jpg)
 
-
-### [BONUS] Digital Wireframes & Mockups
+### [Bonus] Create digital wireframes
+![](https://i.imgur.com/h9B9wX2.png)
 
 ### [BONUS] Interactive Prototype
+![](https://i.imgur.com/tVged2s.gif)
+
 
 ## Schema 
 [This section will be completed in Unit 9]
@@ -72,19 +72,6 @@
 - [Add list of network requests by screen ]
 - [Create basic snippets for each Parse network request]
 - [OPTIONAL: List endpoints if using existing API such as Yelp]
-
-
----
-```gherkin=
-
-```
-
-
-
-```gherkin=
-
-```
-
 
 
 > Read more about sequence-diagrams here: http://bramp.github.io/js-sequence-diagrams/
