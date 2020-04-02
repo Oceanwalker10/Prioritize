@@ -35,7 +35,7 @@ public class AddActivity extends AppCompatActivity {
     private ImageButton ivHome;
     private ItemsAdapter itemsAdapter;
     private int year, month, day;
-    private Task tasks = new Task();
+    private int radioPriority;
 
 
 
@@ -44,6 +44,7 @@ public class AddActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
 
+        radioPriority = 0;
         etTitle = findViewById(R.id.etTitle);
         etDescription = findViewById(R.id.etDescription);
         rgPriority = findViewById(R.id.rgPriority);
@@ -56,7 +57,7 @@ public class AddActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(AddActivity.this, MainActivity.class );
                 startActivity(intent);
-                Toast.makeText(getApplicationContext(), "Home", Toast.LENGTH_SHORT).show();
+                displayMessage("Home");
             }
         });
 
@@ -80,33 +81,46 @@ public class AddActivity extends AppCompatActivity {
         itemsAdapter = new ItemsAdapter(MainActivity.items);
 
         btnAddTask.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                addTask();
-                MainActivity.items.add(tasks);
-                itemsAdapter.notifyItemInserted(MainActivity.items.size() -1);
-                Log.d(tag, "Item was added");
+                Task pendingTask = new Task();
+                if (addTask(pendingTask)) {
+                    MainActivity.items.add(pendingTask);
+                    itemsAdapter.notifyItemInserted(MainActivity.items.size() - 1);
+                    Log.d(tag, "Item was added");
 
-                Intent intent = new Intent(AddActivity.this, MainActivity.class );
-                startActivity(intent);
-                Toast.makeText(getApplicationContext(), "Item was added", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(AddActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    displayMessage("Item was added");
+                }
             }
         });
 
     }
 
-    private void addTask() {
-        tasks.setTitle(etTitle.getText().toString());
-        tasks.setDescription(etDescription.getText().toString());
-        Date date = stringToDate(etDueDate.getText().toString());
-        tasks.setDueDate(date);
+    private boolean addTask(Task task) { //if task is invalid, returns false
+        if (etTitle.getText().toString().trim().isEmpty()) {
+            displayMessage("Task must have a title");
+        } else if (radioPriority == 0) {
+            displayMessage("Task must have a priority number");
+        } else if (etDueDate.getText().toString().trim().isEmpty()) {
+            displayMessage("Task must have a due date");
+        } else {
+            task.setTitle(etTitle.getText().toString().trim());
+            task.setDescription(etDescription.getText().toString().trim());
+            Date date = stringToDate(etDueDate.getText().toString().trim());
+            task.setDueDate(date);
+            return true;
+        }
+        return false;
     }
 
     public void onRadioButtonClicked(View v) {
         int selectedId = rgPriority.getCheckedRadioButtonId();
         RadioButton radioButton = findViewById(selectedId);
-        tasks.setPriority(Integer.parseInt(radioButton.getText().toString()));
-        Log.d(tag, Integer.toString(tasks.getPriority()));
+        radioPriority = Integer.parseInt(radioButton.getText().toString());
+        Log.d(tag, "Priority is " + radioPriority);
 
     }
 
@@ -127,5 +141,9 @@ public class AddActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return date;
+    }
+
+    private void displayMessage(String message) { //convenience method for toasts
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
