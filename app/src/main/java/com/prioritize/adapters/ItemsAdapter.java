@@ -14,9 +14,27 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>{
 
 
     List<Task> items;
+    OnLongClickListener longClickListener;
+    OnClickListener clickListener;
+
+    public interface OnClickListener {
+        void onItemClicked(int position);
+    }
+
+    public interface OnLongClickListener {
+        void onItemLongClicked(int position);
+    }
+
     public ItemsAdapter(List<Task> items) {
         this.items = items;
     }
+
+    public ItemsAdapter(List<Task> items, OnLongClickListener longClickListener, OnClickListener clickListener) {
+        this.items = items;
+        this.longClickListener = longClickListener;
+        this.clickListener = clickListener;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -53,6 +71,20 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>{
 
         public void bind(String item) {
             tvItem.setText(item);
+            tvItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickListener.onItemClicked(getAdapterPosition());
+                }
+            });
+            tvItem.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    // Notify the listener which position was long press
+                    longClickListener.onItemLongClicked(getAdapterPosition());
+                    return true;
+                }
+            });
         }
     }
 }
