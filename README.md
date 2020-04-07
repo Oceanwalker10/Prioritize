@@ -31,6 +31,14 @@
 - [ ] Modify layout to make it more user-friendly.
 - [ ] User's priority tasks will be intuitively filled into their google calendar if they have a google account. 
 
+## Video Walkthrough
+
+Here's a walkthrough of implemented user stories:
+
+<img src='Prioritize_v1.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+GIF created with [LiceCap](http://www.cockos.com/licecap/).
+
 ### 2. Screen Archetypes
 
 * Task list screen
