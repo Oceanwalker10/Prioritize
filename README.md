@@ -17,9 +17,9 @@
 ### 1. User Stories (Required and Optional)
 
 **Required Must-have Stories**
-- [ ] User can create a task, each with a Title, Description, Priority number, and Due date.
-- [ ] App will prioritize the tasks based on Priority Number and Due date.
-- [ ] User can view a list of priority items.
+- [x] User can create a task, each with a Title, Description, Priority number, and Due date.
+- [x] App will prioritize the tasks based on Priority Number and Due date.
+- [x] User can view a list of priority items.
 - [ ] User can successfully add and remove items from the priority list.
 - [ ] User's list of items persisted upon modification and and retrieved properly on app restart.
 - [ ] User will be notified of upcoming assignments within a specified time frame. 
