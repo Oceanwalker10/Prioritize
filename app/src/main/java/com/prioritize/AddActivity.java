@@ -25,7 +25,7 @@ import java.util.Date;
 
 public class AddActivity extends AppCompatActivity {
 
-    private static final String tag = "AddActivity";
+    private static final String TAG = "AddActivity";
 
     private EditText etTitle;
     private EditText etDescription;
@@ -86,9 +86,15 @@ public class AddActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Task pendingTask = new Task();
                 if (addTask(pendingTask)) {
-                    MainActivity.items.add(pendingTask);
-                    itemsAdapter.notifyItemInserted(MainActivity.items.size() - 1);
-                    Log.d(tag, "Item was added");
+                    int addPos = 0;
+                    for (int i = 0; i <= MainActivity.items.size() - 1; i++) {
+                        if (radioPriority >= MainActivity.items.get(i).getPriority()) {
+                            addPos = i + 1;
+                        }
+                    }
+                    MainActivity.items.add(addPos, pendingTask);
+                    itemsAdapter.notifyItemInserted(addPos);
+                    Log.d(TAG, "Item was added at " + addPos);
 
                     Intent intent = new Intent(AddActivity.this, MainActivity.class);
                     startActivity(intent);
@@ -107,10 +113,18 @@ public class AddActivity extends AppCompatActivity {
         } else if (etDueDate.getText().toString().trim().isEmpty()) {
             displayMessage("Task must have a due date");
         } else {
+            try {
+                Date date = new SimpleDateFormat("dd/MM/yyyy").parse(etDueDate.getText().toString().trim());
+                task.setDueDate(date);
+            } catch (ParseException e) {
+                displayMessage("Date is invalid");
+                return false;
+            }
+
             task.setTitle(etTitle.getText().toString().trim());
             task.setDescription(etDescription.getText().toString().trim());
-            Date date = stringToDate(etDueDate.getText().toString().trim());
-            task.setDueDate(date);
+            task.setPriority(radioPriority);
+
             return true;
         }
         return false;
@@ -120,7 +134,7 @@ public class AddActivity extends AppCompatActivity {
         int selectedId = rgPriority.getCheckedRadioButtonId();
         RadioButton radioButton = findViewById(selectedId);
         radioPriority = Integer.parseInt(radioButton.getText().toString());
-        Log.d(tag, "Priority is " + radioPriority);
+        Log.d(TAG, "Priority is " + radioPriority);
 
     }
 
@@ -130,17 +144,6 @@ public class AddActivity extends AppCompatActivity {
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(calendar.DAY_OF_MONTH);
-    }
-
-    private Date stringToDate(String tmp) {
-        Date date = new Date();
-        try {
-            date = new SimpleDateFormat("dd/MM/yyyy").parse(tmp);
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return date;
     }
 
     private void displayMessage(String message) { //convenience method for toasts
