@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/miSortBy"
+        android:title="@string/sort_by"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/miPriority"
+        android:title="@string/priority_number"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/miDueDate"
+        android:title="@string/due_date"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/miSmart"
+        android:title="@string/smart_sort"
+        app:showAsAction="never" />
+</menu>

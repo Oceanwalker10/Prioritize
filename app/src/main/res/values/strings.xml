@@ -9,4 +9,6 @@
     <string name="_5">5</string>
     <string name="priority_number">Priority Number</string>
     <string name="due_date">Due Date</string>
+    <string name="smart_sort">Smart Sort</string>
+    <string name="sort_by">Sort by:</string>
 </resources>
