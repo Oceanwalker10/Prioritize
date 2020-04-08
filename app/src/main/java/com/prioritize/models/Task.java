@@ -1,13 +1,19 @@
 package com.prioritize.models;
 
+import org.parceler.Parcel;
+
 import java.util.Date;
 
+@Parcel
 public class Task {
 
-    private String title;
-    private String description;
-    private int priority;
-    private Date dueDate;
+    //Fields can't be private
+    String title;
+    String description;
+    int priority;
+    Date dueDate;
+
+    public Task() {} //Parceler needs this
 
     public String getTitle() {
         return title;
