@@ -9,4 +9,6 @@
     <string name="_5">5</string>
     <string name="priority_number">Priority Number</string>
     <string name="due_date">Due Date</string>
+    <string name="Priority">Priority</string>
+    <string name="update">Update</string>
 </resources>

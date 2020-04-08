@@ -9,7 +9,7 @@
 
 
     <Button
-        android:id="@+id/btnAdd"
+        android:id="@+id/btnUpdate"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
         android:id="@+id/rvItems"
         android:layout_width="match_parent"
         android:layout_height="694dp"
-        android:layout_above="@+id/btnAdd"
+        android:layout_above="@+id/btnUpdate"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"

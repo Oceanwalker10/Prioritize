@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,13 +20,14 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    public static final String KEY_ITEM_TEXT = "item_text";
+    public static final String KEY_ITEM_TEXT = "item_detail";
     public static final String KEY_ITEM_POSITION = "item_position";
+    public static final int EDIT_TEXT_CODE = 0;
 
     public static List<Task> items = new ArrayList<>();
-    RecyclerView rvItems;
-    Button btnAdd;
-    ItemsAdapter itemsAdapter;
+    private RecyclerView rvItems;
+    private Button btnAdd;
+    private ItemsAdapter itemsAdapter;
 
 
     @Override
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         rvItems = findViewById(R.id.rvItems);
-        btnAdd = findViewById(R.id.btnAdd);
+        btnAdd = findViewById(R.id.btnUpdate);
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,13 +60,12 @@ public class MainActivity extends AppCompatActivity {
         ItemsAdapter.OnClickListener onClickListener = new ItemsAdapter.OnClickListener() {
             @Override
             public void onItemClicked(int position) {
-                /*// create the new activity
-                Intent i = new Intent(MainActivity.this, EditActivity.class);
-                // pass the data being edited
-                i.putExtra(KEY_ITEM_TEXT, items.get(position));
-                i.putExtra(KEY_ITEM_POSITION, position);
+                // create the new activity
+                Intent intent = new Intent(MainActivity.this, EditActivity.class);
                 // display the activity
-                startActivityForResult(i, EDIT_TEXT_CODE);*/
+                intent.putExtra(KEY_ITEM_TEXT, items.get(position));
+                intent.putExtra(KEY_ITEM_POSITION, position);
+                startActivityForResult(intent, EDIT_TEXT_CODE);
             }
         };
 
@@ -72,6 +73,18 @@ public class MainActivity extends AppCompatActivity {
         rvItems.setAdapter(itemsAdapter);
         rvItems.setLayoutManager(new LinearLayoutManager(this));
 
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == EDIT_TEXT_CODE) {
+            Task pendingTask = (Task) data.getSerializableExtra(KEY_ITEM_TEXT);
+            int position = data.getExtras().getInt(KEY_ITEM_POSITION);
+
+            items.set(position, pendingTask);
+            itemsAdapter.notifyItemChanged(position);
+            Toast.makeText(getApplicationContext(), "Task updated successfully!", Toast.LENGTH_LONG).show();
+        }
     }
 }

@@ -94,11 +94,11 @@ public class AddActivity extends AppCompatActivity {
                     }
                     MainActivity.items.add(addPos, pendingTask);
                     itemsAdapter.notifyItemInserted(addPos);
-                    Log.d(TAG, "Item was added at " + addPos);
+                    Log.d(TAG, "Task was added at " + addPos);
 
                     Intent intent = new Intent(AddActivity.this, MainActivity.class);
                     startActivity(intent);
-                    displayMessage("Item was added");
+                    displayMessage("Task was added");
                 }
             }
         });

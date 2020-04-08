@@ -1,8 +1,9 @@
 package com.prioritize.models;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Task {
+public class Task implements Serializable {
 
     private String title;
     private String description;
