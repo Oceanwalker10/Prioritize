@@ -2,13 +2,11 @@ package com.prioritize;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.NumberPicker;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -56,10 +54,6 @@ public class EditActivity extends AppCompatActivity {
                     intent.putExtra(MainActivity.KEY_ITEM_POSITION, position);
 
                     setResult(RESULT_OK, intent);
-                    for(int i=0;i<MainActivity.items.size();i++){
-                        Task task = MainActivity.items.get(i);
-                        Log.d(TAG, task.getTitle() + " " + task.getDescription() + " " + task.getPriority() + " " + task.getDueDate());
-                    }
                     finish();
                 }
             }
@@ -89,6 +83,7 @@ public class EditActivity extends AppCompatActivity {
         npPriority.setMaxValue(5);
         npPriority.setOnValueChangedListener(onValueChangeListener);
     }
+
     private void setTaskDetail() {
         pendingTask = (Task) getIntent().getSerializableExtra(KEY_ITEM_TEXT);
 
@@ -107,10 +102,6 @@ public class EditActivity extends AppCompatActivity {
         position = getIntent().getExtras().getInt(MainActivity.KEY_ITEM_POSITION);
     }
 
-    private void displayMessage(String message) { //convenience method for toasts
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
     private boolean checkRequirement() {
         if (etTitle.getText().toString().trim().isEmpty()) {
             return false;
@@ -118,6 +109,7 @@ public class EditActivity extends AppCompatActivity {
             return true;
         }
     }
+
     private void addTask() {
         pendingTask.setTitle(etTitle.getText().toString().trim());
         pendingTask.setDescription(etDescription.getText().toString().trim());
