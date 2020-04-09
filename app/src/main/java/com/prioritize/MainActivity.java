@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         rvItems = findViewById(R.id.rvItems);
-        btnAdd = findViewById(R.id.btnUpdate);
+        btnAdd = findViewById(R.id.btnAddTask);
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
