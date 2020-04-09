@@ -15,8 +15,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.prioritize.adapters.ItemsAdapter;
 import com.prioritize.models.Task;
+
+import org.parceler.Parcels;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,11 +34,8 @@ public class AddActivity extends AppCompatActivity {
     private EditText etDueDate;
     private Button btnAddTask;
     private ImageButton ivHome;
-    private ItemsAdapter itemsAdapter;
     private int year, month, day;
     private int radioPriority;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,61 +71,41 @@ public class AddActivity extends AppCompatActivity {
         etDueDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 datePickerDialog.show();
             }
         });
-
-        itemsAdapter = new ItemsAdapter(MainActivity.items);
 
         btnAddTask.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Task pendingTask = new Task();
-                if (addTask(pendingTask)) {
-                    int addPos = 0;
-                    for (int i = 0; i <= MainActivity.items.size() - 1; i++) {
-                        if (radioPriority >= MainActivity.items.get(i).getPriority()) {
-                            addPos = i + 1;
-                        }
+                if (etTitle.getText().toString().trim().isEmpty()) {
+                    displayMessage("Task must have a title");
+                } else if (radioPriority == 0) {
+                    displayMessage("Task must have a priority number");
+                } else if (etDueDate.getText().toString().trim().isEmpty()) {
+                    displayMessage("Task must have a due date");
+                } else {
+                    Task task = new Task();
+                    try {
+                        Date date = new SimpleDateFormat("dd/MM/yyyy").parse(etDueDate.getText().toString().trim());
+                        task.setDueDate(date);
+                    } catch (ParseException e) {
+                        displayMessage("Date is invalid");
+                        return;
                     }
-                    MainActivity.items.add(addPos, pendingTask);
-                    itemsAdapter.notifyItemInserted(addPos);
-                    Log.d(TAG, "Item was added at " + addPos);
 
-                    Intent intent = new Intent(AddActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    displayMessage("Item was added");
+                    task.setTitle(etTitle.getText().toString().trim());
+                    task.setDescription(etDescription.getText().toString().trim());
+                    task.setPriority(radioPriority);
+
+                    Intent data = new Intent(AddActivity.this, MainActivity.class);
+                    data.putExtra("task", Parcels.wrap(task));
+                    setResult(RESULT_OK, data);
+                    finish();
                 }
             }
         });
-
-    }
-
-    private boolean addTask(Task task) { //if task is invalid, returns false
-        if (etTitle.getText().toString().trim().isEmpty()) {
-            displayMessage("Task must have a title");
-        } else if (radioPriority == 0) {
-            displayMessage("Task must have a priority number");
-        } else if (etDueDate.getText().toString().trim().isEmpty()) {
-            displayMessage("Task must have a due date");
-        } else {
-            try {
-                Date date = new SimpleDateFormat("dd/MM/yyyy").parse(etDueDate.getText().toString().trim());
-                task.setDueDate(date);
-            } catch (ParseException e) {
-                displayMessage("Date is invalid");
-                return false;
-            }
-
-            task.setTitle(etTitle.getText().toString().trim());
-            task.setDescription(etDescription.getText().toString().trim());
-            task.setPriority(radioPriority);
-
-            return true;
-        }
-        return false;
     }
 
     public void onRadioButtonClicked(View v) {
@@ -135,7 +113,6 @@ public class AddActivity extends AppCompatActivity {
         RadioButton radioButton = findViewById(selectedId);
         radioPriority = Integer.parseInt(radioButton.getText().toString());
         Log.d(TAG, "Priority is " + radioPriority);
-
     }
 
     private void getCurrentDate() {

@@ -1,13 +1,19 @@
 package com.prioritize.models;
 
+import org.parceler.Parcel;
+
+import java.io.Serializable;
 import java.util.Date;
 
-public class Task {
+@Parcel
+public class Task implements Serializable {
 
     private String title;
     private String description;
     private int priority;
     private Date dueDate;
+
+    public Task() {} //Parceler needs this
 
     public String getTitle() {
         return title;
