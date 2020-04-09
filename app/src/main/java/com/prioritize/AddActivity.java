@@ -18,8 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.prioritize.adapters.ItemsAdapter;
 import com.prioritize.models.Task;
 
-import org.parceler.Parcels;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
