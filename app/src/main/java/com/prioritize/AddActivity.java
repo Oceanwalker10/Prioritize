@@ -53,9 +53,8 @@ public class AddActivity extends AppCompatActivity {
         ivHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AddActivity.this, MainActivity.class );
-                startActivity(intent);
-                displayMessage("Home");
+                setResult(RESULT_CANCELED);
+                finish();
             }
         });
 
@@ -100,7 +99,7 @@ public class AddActivity extends AppCompatActivity {
                     task.setPriority(radioPriority);
 
                     Intent data = new Intent(AddActivity.this, MainActivity.class);
-                    data.putExtra("task", Parcels.wrap(task));
+                    data.putExtra(MainActivity.KEY_TASK, Parcels.wrap(task));
                     setResult(RESULT_OK, data);
                     finish();
                 }

@@ -25,6 +25,7 @@ import com.prioritize.utils.SmartSort;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,13 +33,15 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     public static final String KEY_ITEM_TEXT = "item_detail";
     public static final String KEY_ITEM_POSITION = "item_position";
-    public static final int EDIT_TEXT_CODE = 0;
+    public static final String KEY_TASK = "task";
+    public static final int REQUEST_CODE_EDIT = 0;
     public static final int REQUEST_CODE_ADD = 4;
 
     private List<Task> items = new ArrayList<>();
     private RecyclerView rvItems;
     private Button btnAdd;
     private ItemsAdapter itemsAdapter;
+    private Comparator<Task> sorter = new SmartSort();
 
 
     @Override
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 items.remove(position);
                 // Notify the adapter
                 itemsAdapter.notifyItemRemoved(position);
-                Toast.makeText(getApplicationContext(), "Item was removed", Toast.LENGTH_SHORT).show();
+                displayMessage("Item was removed");
             }
         };
 
@@ -74,9 +77,9 @@ public class MainActivity extends AppCompatActivity {
                 // create the new activity
                 Intent intent = new Intent(MainActivity.this, EditActivity.class);
                 // display the activity
-                intent.putExtra(KEY_ITEM_TEXT, items.get(position));
+                intent.putExtra(KEY_ITEM_TEXT, Parcels.wrap(items.get(position)));
                 intent.putExtra(KEY_ITEM_POSITION, position);
-                startActivityForResult(intent, EDIT_TEXT_CODE);
+                startActivityForResult(intent, REQUEST_CODE_EDIT);
             }
         };
 
@@ -89,25 +92,34 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == EDIT_TEXT_CODE) {
-            Task pendingTask = (Task) data.getSerializableExtra(KEY_ITEM_TEXT);
-            int position = data.getExtras().getInt(KEY_ITEM_POSITION);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CODE_EDIT:
+                    Task pendingTask = Parcels.unwrap(data.getParcelableExtra(KEY_ITEM_TEXT));
+                    int position = data.getExtras().getInt(KEY_ITEM_POSITION);
 
-            items.set(position, pendingTask);
-            itemsAdapter.notifyItemChanged(position);
-            Toast.makeText(getApplicationContext(), "Task updated successfully!", Toast.LENGTH_LONG).show();
-        } else if(resultCode == RESULT_OK && requestCode == REQUEST_CODE_ADD){
-            addTask((Task)Parcels.unwrap(data.getParcelableExtra("task")));
-            displayMessage("Item was added");
+                    items.set(position, pendingTask);
+                    reSort();
+                    displayMessage("Task updated successfully!");
+                    break;
+                case REQUEST_CODE_ADD:
+                    addTask((Task) Parcels.unwrap(data.getParcelableExtra(KEY_TASK)));
+                    displayMessage("Item was added");
+                    break;
+                default:
+                    Log.e(TAG, "Invalid request code");
+            }
         }
     }
 
     private void addTask(Task task) {
         int addPos = 0;
-        for (int i = 0; i <= items.size() - 1; i++) {
-            if (task.getPriority() >= items.get(i).getPriority()) {
+        for (int i = items.size() - 1; i >= 0; i--) {
+            if (sorter.compare(task, items.get(i)) >= 0) {
                 addPos = i + 1;
+                break;
             }
+
         }
 
         items.add(addPos, task);
@@ -124,31 +136,28 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.miPriority:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    items.sort(new PrioritySort());
-                    itemsAdapter.notifyDataSetChanged();
-                } else {
-                    Log.e(TAG, "Insufficient API level");
-                }
+                sorter = new PrioritySort();
+                reSort();
                 break;
             case R.id.miDueDate:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    items.sort(new DueDateSort());
-                    itemsAdapter.notifyDataSetChanged();
-                } else {
-                    Log.e(TAG, "Insufficient API level");
-                }
+                sorter = new DueDateSort();
+                reSort();
                 break;
             case R.id.miSmart:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    items.sort(new SmartSort());
-                    itemsAdapter.notifyDataSetChanged();
-                } else {
-                    Log.e(TAG, "Insufficient API level");
-                }
+                sorter = new SmartSort();
+                reSort();
                 break;
         }
         return true;
+    }
+
+    private void reSort() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            items.sort(sorter);
+            itemsAdapter.notifyDataSetChanged();
+        } else {
+            Log.e(TAG, "Insufficient API level");
+        }
     }
 
     private void displayMessage(String message) { //convenience method for toasts
