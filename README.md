@@ -17,9 +17,9 @@
 ### 1. User Stories (Required and Optional)
 
 **Required Must-have Stories**
-- [ ] User can create a task, each with a Title, Description, Priority number, and Due date.
-- [ ] App will prioritize the tasks based on Priority Number and Due date.
-- [ ] User can view a list of priority items.
+- [x] User can create a task, each with a Title, Description, Priority number, and Due date.
+- [x] App will prioritize the tasks based on Priority Number and Due date.
+- [x] User can view a list of priority items.
 - [ ] User can successfully add and remove items from the priority list.
 - [ ] User's list of items persisted upon modification and and retrieved properly on app restart.
 - [ ] User will be notified of upcoming assignments within a specified time frame. 
@@ -30,6 +30,14 @@
 
 - [ ] Modify layout to make it more user-friendly.
 - [ ] User's priority tasks will be intuitively filled into their google calendar if they have a google account. 
+
+## Video Walkthrough
+
+Here's a walkthrough of implemented user stories:
+
+<img src='Prioritize_v1.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ### 2. Screen Archetypes
 

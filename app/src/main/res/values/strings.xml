@@ -11,4 +11,7 @@
     <string name="due_date">Due Date</string>
     <string name="smart_sort">Smart Sort</string>
     <string name="sort_by">Sort by:</string>
+    <string name="Priority">Priority</string>
+    <string name="update">Update</string>
+    <string name="add">Add</string>
 </resources>

@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.prioritize.adapters.ItemsAdapter;
 import com.prioritize.models.Task;
 
 import org.parceler.Parcels;
@@ -37,8 +36,6 @@ public class AddActivity extends AppCompatActivity {
     private ImageButton ivHome;
     private int year, month, day;
     private int radioPriority;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +113,6 @@ public class AddActivity extends AppCompatActivity {
         RadioButton radioButton = findViewById(selectedId);
         radioPriority = Integer.parseInt(radioButton.getText().toString());
         Log.d(TAG, "Priority is " + radioPriority);
-
     }
 
     private void getCurrentDate() {
