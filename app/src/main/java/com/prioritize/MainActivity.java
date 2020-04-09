@@ -33,13 +33,12 @@ public class MainActivity extends AppCompatActivity {
     public static final String KEY_ITEM_TEXT = "item_detail";
     public static final String KEY_ITEM_POSITION = "item_position";
     public static final int EDIT_TEXT_CODE = 0;
-
     public static final int REQUEST_CODE_ADD = 4;
 
-    List<Task> items = new ArrayList<>();
-    RecyclerView rvItems;
-    Button btnAdd;
-    ItemsAdapter itemsAdapter;
+    private List<Task> items = new ArrayList<>();
+    private RecyclerView rvItems;
+    private Button btnAdd;
+    private ItemsAdapter itemsAdapter;
 
 
     @Override
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             items.set(position, pendingTask);
             itemsAdapter.notifyItemChanged(position);
             Toast.makeText(getApplicationContext(), "Task updated successfully!", Toast.LENGTH_LONG).show();
-        } else if(resultCode == REQUEST_CODE_ADD){
+        } else if(resultCode == RESULT_OK && requestCode == REQUEST_CODE_ADD){
             addTask((Task)Parcels.unwrap(data.getParcelableExtra("task")));
             displayMessage("Item was added");
         }
