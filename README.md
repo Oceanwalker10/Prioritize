@@ -39,7 +39,7 @@ Here's a walkthrough of implemented user stories:
 
 
 **Milestone 2 Gif**
-<img src='prioritizegif.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='prioritize gif.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIFs created with [LiceCap](http://www.cockos.com/licecap/).
 ### 2. Screen Archetypes
