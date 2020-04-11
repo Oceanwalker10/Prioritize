@@ -20,10 +20,10 @@
 - [x] User can create a task, each with a Title, Description, Priority number, and Due date.
 - [x] App will prioritize the tasks based on Priority Number and Due date.
 - [x] User can view a list of priority items.
-- [ ] User can successfully add and remove items from the priority list.
+- [X] User can successfully add and remove items from the priority list.
 - [ ] User's list of items persisted upon modification and and retrieved properly on app restart.
 - [ ] User will be notified of upcoming assignments within a specified time frame. 
-- [ ] User has the ability to sort in multiple ways, including manually.
+- [X] User has the ability to sort in multiple ways, including manually.
 
 
 **Optional Nice-to-have Stories**
@@ -37,8 +37,11 @@ Here's a walkthrough of implemented user stories:
 
 <img src='Prioritize_v1.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
-GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
+**Milestone 2 Gif**
+<img src='prioritizegif.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+GIFs created with [LiceCap](http://www.cockos.com/licecap/).
 ### 2. Screen Archetypes
 
 * Task list screen
