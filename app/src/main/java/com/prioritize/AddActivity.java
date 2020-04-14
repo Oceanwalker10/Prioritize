@@ -62,14 +62,6 @@ public class AddActivity extends AppCompatActivity {
         btnAddTask = findViewById(R.id.btnAddTask);
         ivHome = findViewById(R.id.ivHome);
 
-        try {
-            loadItems();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        }
-
         ivHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,27 +99,20 @@ public class AddActivity extends AppCompatActivity {
                 } else {
                     Task task = new Task();
                     try {
-                        Date date = new SimpleDateFormat("dd/MM/yyyy").parse(etDueDate.getText().toString().trim());
-                        task.setDueDate(date);
+                        task.setDueDate(new SimpleDateFormat("dd/MM/yyyy").parse(etDueDate.getText().toString().trim()));
                     } catch (ParseException e) {
                         displayMessage("Date is invalid");
                         return;
                     }
+
 
                     task.setTitle(etTitle.getText().toString().trim());
                     task.setDescription(etDescription.getText().toString().trim());
                     task.setPriority(radioPriority);
 
                     Intent data = new Intent(AddActivity.this, MainActivity.class);
-                    data.putExtra(MainActivity.KEY_TASK, Parcels.wrap(task));
+                    data.putExtra(MainActivity.KEY_ITEM_TEXT, Parcels.wrap(task));
                     setResult(RESULT_OK, data);
-                    try {
-                        saveItems();
-                    } catch (ParserConfigurationException e) {
-                        e.printStackTrace();
-                    } catch (SAXException e) {
-                        e.printStackTrace();
-                    }
                     finish();
                 }
             }
@@ -146,33 +131,10 @@ public class AddActivity extends AppCompatActivity {
         final Calendar calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
-        day = calendar.get(calendar.DAY_OF_MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
     }
 
     private void displayMessage(String message) { //convenience method for toasts
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    // to persist items
-    private File getDataFile() {
-        return new File(getFilesDir(), "data.xml");
-    }
-
-    private void loadItems() throws ParserConfigurationException, SAXException {
-        try {
-            items = new ArrayList<String>(FileUtils.readLines(getDataFile(), Charset.defaultCharset()));
-        } catch (IOException e) {
-            Log.e("AddActivity", "Error reading items", e);
-            items = new ArrayList<>();
-        }
-    }
-    //this function saves items by writing them into the data file
-    private void saveItems() throws ParserConfigurationException, SAXException {
-        try {
-            FileUtils.writeLines(getDataFile(), items);
-        } catch (IOException e) {
-            Log.e("AddActivity", "Error writing items", e);
-        }
-
     }
 }

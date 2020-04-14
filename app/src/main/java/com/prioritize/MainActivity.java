@@ -2,6 +2,7 @@ package com.prioritize;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.prioritize.adapters.ItemsAdapter;
 import com.prioritize.models.Task;
+import com.prioritize.models.TaskDao;
 import com.prioritize.utils.DueDateSort;
 import com.prioritize.utils.PrioritySort;
 import com.prioritize.utils.SmartSort;
@@ -32,6 +34,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -41,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     public static final String KEY_ITEM_TEXT = "item_detail";
     public static final String KEY_ITEM_POSITION = "item_position";
-    public static final String KEY_TASK = "task";
     public static final int REQUEST_CODE_EDIT = 0;
     public static final int REQUEST_CODE_ADD = 4;
 
@@ -51,24 +53,19 @@ public class MainActivity extends AppCompatActivity {
     private Button btnAdd;
     private ItemsAdapter itemsAdapter;
 
-    private final String FILENAME = "task";
-    private File file;
-    private FileOutputStream fileOutputStream = null;
-
     private Comparator<Task> sorter = new SmartSort();
 
-
+    TaskDao taskDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        taskDao = ((PrioritizeApplication) getApplicationContext()).getMyDatabase().taskDao();
+
         rvItems = findViewById(R.id.rvItems);
         btnAdd = findViewById(R.id.btnAdd);
-
-        createFile();
-        readFile();
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +77,13 @@ public class MainActivity extends AppCompatActivity {
 
         ItemsAdapter.OnLongClickListener onLongClickListener = new ItemsAdapter.OnLongClickListener() {
             @Override
-            public void onItemLongClicked(int position) {
+            public void onItemLongClicked(final int position) {
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        taskDao.deleteTask(items.get(position));
+                    }
+                });
                 // Delete the item from the model
                 items.remove(position);
                 // Notify the adapter
@@ -105,6 +108,14 @@ public class MainActivity extends AppCompatActivity {
         rvItems.setAdapter(itemsAdapter);
         rvItems.setLayoutManager(new LinearLayoutManager(this));
 
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                items.addAll(taskDao.getTasks());
+                reSort();
+            }
+        });
+
     }
 
     @Override
@@ -114,15 +125,30 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_EDIT:
-                    Task pendingTask = Parcels.unwrap(data.getParcelableExtra(KEY_ITEM_TEXT));
-                    int position = data.getExtras().getInt(KEY_ITEM_POSITION);
+                    final Task pendingTask = Parcels.unwrap(data.getParcelableExtra(KEY_ITEM_TEXT));
+                    final int position = data.getExtras().getInt(KEY_ITEM_POSITION);
+
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            taskDao.deleteTask(items.get(position));
+                            taskDao.insertTask(pendingTask);
+                        }
+                    });
 
                     items.set(position, pendingTask);
                     reSort();
                     displayMessage("Task updated successfully!");
                     break;
                 case REQUEST_CODE_ADD:
-                    addTask((Task) Parcels.unwrap(data.getParcelableExtra(KEY_TASK)));
+                    final Task newTask = Parcels.unwrap(data.getParcelableExtra(KEY_ITEM_TEXT));
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            taskDao.insertTask(newTask);
+                        }
+                    });
+                    addTask(newTask);
                     displayMessage("Item was added");
                     break;
                 default:
@@ -182,59 +208,4 @@ public class MainActivity extends AppCompatActivity {
     private void displayMessage(String message) { //convenience method for toasts
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-
-    private void createFile() {
-        try {
-            fileOutputStream = openFileOutput(FILENAME, Context.MODE_APPEND);
-            fileOutputStream.close();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void writeTask() {
-        int index = 0;
-        try {
-            fileOutputStream = new FileOutputStream(file);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            while(items.size() > index) {
-                objectOutputStream.writeObject(items.get(index));
-            }
-            objectOutputStream.close();
-            fileOutputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void readFile() {
-        file = getFileStreamPath(FILENAME);
-        FileInputStream fileInputStream = null;
-        ObjectInputStream objectInputStream = null;
-        try {
-            fileInputStream= new FileInputStream(file);
-            objectInputStream = new ObjectInputStream(fileInputStream);
-            while(true){
-                Log.d(TAG, objectInputStream.readObject().toString());
-                addTask((Task) objectInputStream.readObject());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        /*try {
-            fileInputStream.close();
-            objectInputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-    }
-
 }
