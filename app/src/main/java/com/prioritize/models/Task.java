@@ -2,10 +2,11 @@ package com.prioritize.models;
 
 import org.parceler.Parcel;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Parcel
-public class Task {
+public class Task implements Serializable {
 
     //Fields can't be private
     String title;

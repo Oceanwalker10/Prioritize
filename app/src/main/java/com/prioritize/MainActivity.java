@@ -44,10 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private Button btnAdd;
     private ItemsAdapter itemsAdapter;
 
-    private final String FILENAME = "task";
-    private File file;
-    private FileOutputStream fileOutputStream = null;
-
     private Comparator<Task> sorter = new SmartSort();
 
 
@@ -97,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         itemsAdapter = new ItemsAdapter(items, onLongClickListener, onClickListener);
         rvItems.setAdapter(itemsAdapter);
         rvItems.setLayoutManager(new LinearLayoutManager(this));
-
+        reSort();
     }
 
     @Override
@@ -118,11 +114,11 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case REQUEST_CODE_ADD:
                     addTask((Task) Parcels.unwrap(data.getParcelableExtra(KEY_TASK)));
-                    addTask(pendTask);
                     FileUtil.writeTask(items);
                     displayMessage("Item was added");
                 default:
                     Log.e(TAG, "Invalid request code");
+            }
         }
     }
 
