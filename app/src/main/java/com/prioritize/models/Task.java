@@ -4,15 +4,15 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.Date;
+
 import org.parceler.Parcel;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @Parcel
 @Entity
 public class Task {
+
     //Fields can't be private
     @ColumnInfo
     @PrimaryKey(autoGenerate = true)

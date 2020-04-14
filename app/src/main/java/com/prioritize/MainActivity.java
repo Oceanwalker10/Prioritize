@@ -1,6 +1,5 @@
 package com.prioritize;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -19,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.prioritize.adapters.ItemsAdapter;
+import com.prioritize.fileUtils.FileUtil;
 import com.prioritize.models.Task;
 import com.prioritize.models.TaskDao;
 import com.prioritize.utils.DueDateSort;
@@ -27,14 +27,6 @@ import com.prioritize.utils.SmartSort;
 
 import org.parceler.Parcels;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -115,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
                 reSort();
             }
         });
-
     }
 
     @Override
@@ -138,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
 
                     items.set(position, pendingTask);
                     reSort();
+                    itemsAdapter.notifyItemChanged(position);
+                    FileUtil.writeTask(items);
                     displayMessage("Task updated successfully!");
                     break;
                 case REQUEST_CODE_ADD:
@@ -148,9 +141,9 @@ public class MainActivity extends AppCompatActivity {
                             taskDao.insertTask(newTask);
                         }
                     });
+                
                     addTask(newTask);
                     displayMessage("Item was added");
-                    break;
                 default:
                     Log.e(TAG, "Invalid request code");
             }

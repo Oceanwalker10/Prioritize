@@ -3,7 +3,6 @@ package com.prioritize;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,22 +17,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.prioritize.models.Task;
 
-import org.apache.commons.io.FileUtils;
 import org.parceler.Parcels;
 
-import org.xml.sax.SAXException;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 public class AddActivity extends AppCompatActivity {
 
