@@ -1,6 +1,5 @@
 package com.prioritize;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.prioritize.adapters.ItemsAdapter;
+import com.prioritize.fileUtils.FileUtil;
 import com.prioritize.models.Task;
 import com.prioritize.utils.DueDateSort;
 import com.prioritize.utils.PrioritySort;
@@ -25,13 +25,6 @@ import com.prioritize.utils.SmartSort;
 
 import org.parceler.Parcels;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,9 +41,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rvItems;
     private Button btnAdd;
     private ItemsAdapter itemsAdapter;
-    private final String FILENAME = "task";
-    private File file;
-    private FileOutputStream fileOutputStream = null;
 
 
     @Override
@@ -61,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
         rvItems = findViewById(R.id.rvItems);
         btnAdd = findViewById(R.id.btnAdd);
 
-        createFile();
-        readFile();
+        FileUtil.createFile(getApplicationContext());
+        items = FileUtil.readFile(getApplicationContext());
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,12 +100,12 @@ public class MainActivity extends AppCompatActivity {
 
             items.set(position, pendingTask);
             itemsAdapter.notifyItemChanged(position);
-            writeTask();
+            FileUtil.writeTask(items);
             displayMessage("Task updated successfully!");
         } else if(resultCode == RESULT_OK && requestCode == REQUEST_CODE_ADD){
             Task pendTask = (Task)Parcels.unwrap(data.getParcelableExtra("task"));
             addTask(pendTask);
-            writeTask();
+            FileUtil.writeTask(items);
             displayMessage("Item was added");
         }
     }
@@ -173,58 +163,6 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void createFile() {
-        try {
-            fileOutputStream = openFileOutput(FILENAME, Context.MODE_APPEND);
-            fileOutputStream.close();
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void writeTask() {
-        int index = 0;
-        try {
-            fileOutputStream = new FileOutputStream(file);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            while(items.size() > index) {
-                objectOutputStream.writeObject(items.get(index));
-            }
-            objectOutputStream.close();
-            fileOutputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void readFile() {
-        file = getFileStreamPath(FILENAME);
-        FileInputStream fileInputStream = null;
-        ObjectInputStream objectInputStream = null;
-        try {
-            fileInputStream= new FileInputStream(file);
-            objectInputStream = new ObjectInputStream(fileInputStream);
-            while(true){
-                Log.d(TAG, objectInputStream.readObject().toString());
-                addTask((Task) objectInputStream.readObject());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        /*try {
-            fileInputStream.close();
-            objectInputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-    }
 
 }
