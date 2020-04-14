@@ -192,6 +192,8 @@ public class MainActivity extends AppCompatActivity {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             while(items.size() > index) {
                 objectOutputStream.writeObject(items.get(index));
+                Log.d(TAG, items.get(index).toString());
+                index ++;
             }
             objectOutputStream.close();
             fileOutputStream.close();
@@ -206,24 +208,21 @@ public class MainActivity extends AppCompatActivity {
         file = getFileStreamPath(FILENAME);
         FileInputStream fileInputStream = null;
         ObjectInputStream objectInputStream = null;
+        Task task = null;
         try {
             fileInputStream= new FileInputStream(file);
             objectInputStream = new ObjectInputStream(fileInputStream);
-            while(true){
+            while((task = (Task) objectInputStream.readObject()) != null){
                 Log.d(TAG, objectInputStream.readObject().toString());
-                addTask((Task) objectInputStream.readObject());
+                items.add(task);
             }
+            fileInputStream.close();
+            objectInputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        /*try {
-            fileInputStream.close();
-            objectInputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
 
     }
 
