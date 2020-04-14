@@ -90,19 +90,19 @@ public class AddActivity extends AppCompatActivity {
                 } else {
                     Task task = new Task();
                     try {
-                        Date date = new SimpleDateFormat("dd/MM/yyyy").parse(etDueDate.getText().toString().trim());
-                        task.setDueDate(date);
+                        task.setDueDate(new SimpleDateFormat("dd/MM/yyyy").parse(etDueDate.getText().toString().trim()));
                     } catch (ParseException e) {
                         displayMessage("Date is invalid");
                         return;
                     }
+
 
                     task.setTitle(etTitle.getText().toString().trim());
                     task.setDescription(etDescription.getText().toString().trim());
                     task.setPriority(radioPriority);
 
                     Intent data = new Intent(AddActivity.this, MainActivity.class);
-                    data.putExtra(MainActivity.KEY_TASK, Parcels.wrap(task));
+                    data.putExtra(MainActivity.KEY_ITEM_TEXT, Parcels.wrap(task));
                     setResult(RESULT_OK, data);
                     finish();
                 }
@@ -122,7 +122,7 @@ public class AddActivity extends AppCompatActivity {
         final Calendar calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
-        day = calendar.get(calendar.DAY_OF_MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
     }
 
     private void displayMessage(String message) { //convenience method for toasts

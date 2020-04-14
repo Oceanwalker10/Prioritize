@@ -1,17 +1,29 @@
 package com.prioritize.models;
 
-import org.parceler.Parcel;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
-import java.io.Serializable;
 import java.util.Date;
 
+import org.parceler.Parcel;
+
+
 @Parcel
-public class Task implements Serializable {
+@Entity
+public class Task {
 
     //Fields can't be private
+    @ColumnInfo
+    @PrimaryKey(autoGenerate = true)
+    long id;
+    @ColumnInfo
     String title;
+    @ColumnInfo
     String description;
+    @ColumnInfo
     int priority;
+    @ColumnInfo
     Date dueDate;
 
     public Task() {} //Parceler needs this
@@ -40,12 +52,8 @@ public class Task implements Serializable {
         this.priority = priority;
     }
 
-    public Date getDueDate() {
-        return dueDate;
-    }
+    public Date getDueDate() { return dueDate; }
 
-    public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
-    }
+    public void setDueDate(Date date) { this.dueDate = date; }
 
 }
