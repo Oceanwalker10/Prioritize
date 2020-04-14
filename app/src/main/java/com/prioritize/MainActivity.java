@@ -1,5 +1,6 @@
 package com.prioritize;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +25,13 @@ import com.prioritize.utils.SmartSort;
 
 import org.parceler.Parcels;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -37,11 +45,18 @@ public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_EDIT = 0;
     public static final int REQUEST_CODE_ADD = 4;
 
+
     private List<Task> items = new ArrayList<>();
     private RecyclerView rvItems;
     private Button btnAdd;
     private ItemsAdapter itemsAdapter;
+
+    private final String FILENAME = "task";
+    private File file;
+    private FileOutputStream fileOutputStream = null;
+
     private Comparator<Task> sorter = new SmartSort();
+
 
 
     @Override
@@ -51,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
 
         rvItems = findViewById(R.id.rvItems);
         btnAdd = findViewById(R.id.btnAdd);
+
+        createFile();
+        readFile();
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_EDIT:
@@ -163,4 +182,59 @@ public class MainActivity extends AppCompatActivity {
     private void displayMessage(String message) { //convenience method for toasts
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
+
+    private void createFile() {
+        try {
+            fileOutputStream = openFileOutput(FILENAME, Context.MODE_APPEND);
+            fileOutputStream.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeTask() {
+        int index = 0;
+        try {
+            fileOutputStream = new FileOutputStream(file);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            while(items.size() > index) {
+                objectOutputStream.writeObject(items.get(index));
+            }
+            objectOutputStream.close();
+            fileOutputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void readFile() {
+        file = getFileStreamPath(FILENAME);
+        FileInputStream fileInputStream = null;
+        ObjectInputStream objectInputStream = null;
+        try {
+            fileInputStream= new FileInputStream(file);
+            objectInputStream = new ObjectInputStream(fileInputStream);
+            while(true){
+                Log.d(TAG, objectInputStream.readObject().toString());
+                addTask((Task) objectInputStream.readObject());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        /*try {
+            fileInputStream.close();
+            objectInputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
+    }
+
 }

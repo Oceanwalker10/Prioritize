@@ -3,6 +3,7 @@ package com.prioritize;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,12 +18,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.prioritize.models.Task;
 
+import org.apache.commons.io.FileUtils;
 import org.parceler.Parcels;
 
+import org.xml.sax.SAXException;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 public class AddActivity extends AppCompatActivity {
 
@@ -36,6 +47,7 @@ public class AddActivity extends AppCompatActivity {
     private ImageButton ivHome;
     private int year, month, day;
     private int radioPriority;
+    private List<String> items = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +61,14 @@ public class AddActivity extends AppCompatActivity {
         etDueDate = findViewById(R.id.etDueDate);
         btnAddTask = findViewById(R.id.btnAddTask);
         ivHome = findViewById(R.id.ivHome);
+
+        try {
+            loadItems();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        }
 
         ivHome.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,6 +121,13 @@ public class AddActivity extends AppCompatActivity {
                     Intent data = new Intent(AddActivity.this, MainActivity.class);
                     data.putExtra(MainActivity.KEY_TASK, Parcels.wrap(task));
                     setResult(RESULT_OK, data);
+                    try {
+                        saveItems();
+                    } catch (ParserConfigurationException e) {
+                        e.printStackTrace();
+                    } catch (SAXException e) {
+                        e.printStackTrace();
+                    }
                     finish();
                 }
             }
@@ -123,6 +150,29 @@ public class AddActivity extends AppCompatActivity {
     }
 
     private void displayMessage(String message) { //convenience method for toasts
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    // to persist items
+    private File getDataFile() {
+        return new File(getFilesDir(), "data.xml");
+    }
+
+    private void loadItems() throws ParserConfigurationException, SAXException {
+        try {
+            items = new ArrayList<String>(FileUtils.readLines(getDataFile(), Charset.defaultCharset()));
+        } catch (IOException e) {
+            Log.e("AddActivity", "Error reading items", e);
+            items = new ArrayList<>();
+        }
+    }
+    //this function saves items by writing them into the data file
+    private void saveItems() throws ParserConfigurationException, SAXException {
+        try {
+            FileUtils.writeLines(getDataFile(), items);
+        } catch (IOException e) {
+            Log.e("AddActivity", "Error writing items", e);
+        }
+
     }
 }
