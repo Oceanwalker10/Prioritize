@@ -14,12 +14,13 @@ public class SmartSort implements Comparator<Task> {
     */
     @Override
     public int compare(@NotNull Task o1, @NotNull Task o2) {
-        long timeDiff = o1.getDueDate().getTime() - o2.getDueDate().getTime();
+        long timeDiff = o1.getDueDate().getTime() - o2.getDueDate().getTime(); //time in milliseconds
+        timeDiff /= 1000 * 3600 * 24; //convert to days
         int priorityDiff = o2.getPriority() - o1.getPriority();
         if (Math.abs(timeDiff) > Math.abs(priorityDiff)) {
-            return (int)Math.signum(timeDiff);
+            return new DueDateSort().compare(o1, o2);
         } else {
-            return priorityDiff;
+            return new PrioritySort().compare(o1, o2);
         }
     }
 }
