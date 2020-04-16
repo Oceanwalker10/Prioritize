@@ -8,9 +8,8 @@ import java.util.Comparator;
 
 public class SmartSort implements Comparator<Task> {
     /*
-    Temporary algorithm for smart-sort because I don't remember what it was going to be.
-    If the difference in the time of two activities is greater than the difference in their priorities,
-    it returns the one due sooner. If not, it returns the one with a higher priority.
+    Turns out my algorithm matched Izzy's in functionality exactly :)
+    A revisit is still possible.
     */
     @Override
     public int compare(@NotNull Task o1, @NotNull Task o2) {

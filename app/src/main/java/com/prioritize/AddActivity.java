@@ -38,7 +38,6 @@ public class AddActivity extends AppCompatActivity {
     private ImageButton ivHome;
     private int year, month, day;
     private int radioPriority;
-    private List<String> items = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
