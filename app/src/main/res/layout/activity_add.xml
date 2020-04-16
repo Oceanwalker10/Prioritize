@@ -16,6 +16,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginTop="10dp"
         android:ems="10"
+        android:fontFamily="sans-serif"
         android:hint="@string/name_of_task"
         android:inputType="textPersonName" />
 
@@ -47,14 +48,16 @@
 
     <Button
         android:id="@+id/btnAddTask"
-        style="@style/Widget.AppCompat.Button"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp"
-        android:text="Add Task" />
+        android:backgroundTint="#6495ED"
+        android:text="Add Task"
+        android:textStyle="bold" />
 
     <RadioGroup
         android:id="@+id/rgPriority"
@@ -110,12 +113,14 @@
 
     <ImageButton
         android:id="@+id/ivHome"
+        style="@android:style/Widget.Holo.Light.ImageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="6dp"
         android:layout_marginBottom="5dp"
+        android:backgroundTint="#6495ED"
         android:contentDescription="go back to Home"
         app:srcCompat="?attr/homeAsUpIndicator" />
 
