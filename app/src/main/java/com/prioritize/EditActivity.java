@@ -20,11 +20,7 @@ import java.util.GregorianCalendar;
 
 public class EditActivity extends AppCompatActivity {
 
-
-    private static final String KEY_ITEM_TEXT = "item_detail";
-
     private static final String TAG = "EditActivity";
-
 
     private EditText etTitle;
     private EditText etDescription;

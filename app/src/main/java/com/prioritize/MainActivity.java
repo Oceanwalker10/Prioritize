@@ -69,10 +69,11 @@ public class MainActivity extends AppCompatActivity {
         ItemsAdapter.OnLongClickListener onLongClickListener = new ItemsAdapter.OnLongClickListener() {
             @Override
             public void onItemLongClicked(final int position) {
+                final Task deletedTask = items.get(position);
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        taskDao.deleteTask(items.get(position));
+                        taskDao.deleteTask(deletedTask);
                     }
                 });
                 // Delete the item from the model
@@ -103,7 +104,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 items.addAll(taskDao.getTasks());
-                reSort();
+                //If background thread tries to run this, Android says NOPE
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        reSort();
+                    }
+                });
             }
         });
     }
@@ -117,18 +124,19 @@ public class MainActivity extends AppCompatActivity {
                 case REQUEST_CODE_EDIT:
                     final Task pendingTask = Parcels.unwrap(data.getParcelableExtra(KEY_ITEM_TEXT));
                     final int position = data.getExtras().getInt(KEY_ITEM_POSITION);
+                    final Task editTask = items.get(position);
 
                     AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
-                            taskDao.deleteTask(items.get(position));
+                            taskDao.deleteTask(editTask);
                             taskDao.insertTask(pendingTask);
                         }
                     });
 
                     items.set(position, pendingTask);
                     reSort();
-                    itemsAdapter.notifyItemChanged(position);
+                    itemsAdapter.notifyDataSetChanged();
                     displayMessage("Task updated successfully!");
                     break;
                 case REQUEST_CODE_ADD:
