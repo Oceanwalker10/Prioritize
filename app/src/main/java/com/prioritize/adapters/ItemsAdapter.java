@@ -9,13 +9,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.prioritize.models.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>{
 
 
-    List<Task> items;
-    OnLongClickListener longClickListener;
-    OnClickListener clickListener;
+    private List<Task> items;
+    private OnLongClickListener longClickListener;
+    private OnClickListener clickListener;
 
     public interface OnClickListener {
         void onItemClicked(int position);
