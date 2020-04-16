@@ -1,7 +1,7 @@
 package com.prioritize;
 
-import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,20 +19,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.prioritize.adapters.ItemsAdapter;
 import com.prioritize.models.Task;
+import com.prioritize.models.TaskDao;
 import com.prioritize.utils.DueDateSort;
 import com.prioritize.utils.PrioritySort;
 import com.prioritize.utils.SmartSort;
 
 import org.parceler.Parcels;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     public static final String KEY_ITEM_TEXT = "item_detail";
     public static final String KEY_ITEM_POSITION = "item_position";
-    public static final int EDIT_TEXT_CODE = 0;
+    public static final int REQUEST_CODE_EDIT = 0;
     public static final int REQUEST_CODE_ADD = 4;
 
 
@@ -48,21 +43,20 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rvItems;
     private Button btnAdd;
     private ItemsAdapter itemsAdapter;
-    private final String FILENAME = "task";
-    private File file;
-    private FileOutputStream fileOutputStream = null;
 
+    private Comparator<Task> sorter = new SmartSort();
+
+    TaskDao taskDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        taskDao = ((PrioritizeApplication) getApplicationContext()).getMyDatabase().taskDao();
+
         rvItems = findViewById(R.id.rvItems);
         btnAdd = findViewById(R.id.btnAdd);
-
-        createFile();
-        readFile();
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +68,13 @@ public class MainActivity extends AppCompatActivity {
 
         ItemsAdapter.OnLongClickListener onLongClickListener = new ItemsAdapter.OnLongClickListener() {
             @Override
-            public void onItemLongClicked(int position) {
+            public void onItemLongClicked(final int position) {
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        taskDao.deleteTask(items.get(position));
+                    }
+                });
                 // Delete the item from the model
                 items.remove(position);
                 // Notify the adapter
@@ -89,9 +89,9 @@ public class MainActivity extends AppCompatActivity {
                 // create the new activity
                 Intent intent = new Intent(MainActivity.this, EditActivity.class);
                 // display the activity
-                intent.putExtra(KEY_ITEM_TEXT, items.get(position));
+                intent.putExtra(KEY_ITEM_TEXT, Parcels.wrap(items.get(position)));
                 intent.putExtra(KEY_ITEM_POSITION, position);
-                startActivityForResult(intent, EDIT_TEXT_CODE);
+                startActivityForResult(intent, REQUEST_CODE_EDIT);
             }
         };
 
@@ -99,33 +99,63 @@ public class MainActivity extends AppCompatActivity {
         rvItems.setAdapter(itemsAdapter);
         rvItems.setLayoutManager(new LinearLayoutManager(this));
 
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                items.addAll(taskDao.getTasks());
+                reSort();
+            }
+        });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == EDIT_TEXT_CODE) {
-            Task pendingTask = (Task) data.getSerializableExtra(KEY_ITEM_TEXT);
-            int position = data.getExtras().getInt(KEY_ITEM_POSITION);
 
-            items.set(position, pendingTask);
-            itemsAdapter.notifyItemChanged(position);
-            writeTask();
-            displayMessage("Task updated successfully!");
-        } else if(resultCode == RESULT_OK && requestCode == REQUEST_CODE_ADD){
-            Task pendTask = (Task)Parcels.unwrap(data.getParcelableExtra("task"));
-            addTask(pendTask);
-            writeTask();
-            displayMessage("Item was added");
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CODE_EDIT:
+                    final Task pendingTask = Parcels.unwrap(data.getParcelableExtra(KEY_ITEM_TEXT));
+                    final int position = data.getExtras().getInt(KEY_ITEM_POSITION);
+
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            taskDao.deleteTask(items.get(position));
+                            taskDao.insertTask(pendingTask);
+                        }
+                    });
+
+                    items.set(position, pendingTask);
+                    reSort();
+                    itemsAdapter.notifyItemChanged(position);
+                    displayMessage("Task updated successfully!");
+                    break;
+                case REQUEST_CODE_ADD:
+                    final Task newTask = Parcels.unwrap(data.getParcelableExtra(KEY_ITEM_TEXT));
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            taskDao.insertTask(newTask);
+                        }
+                    });
+                
+                    addTask(newTask);
+                    displayMessage("Item was added");
+                default:
+                    Log.e(TAG, "Invalid request code");
+            }
         }
     }
 
     private void addTask(Task task) {
         int addPos = 0;
-        for (int i = 0; i <= items.size() - 1; i++) {
-            if (task.getPriority() >= items.get(i).getPriority()) {
+        for (int i = items.size() - 1; i >= 0; i--) {
+            if (sorter.compare(task, items.get(i)) >= 0) {
                 addPos = i + 1;
+                break;
             }
+
         }
 
         items.add(addPos, task);
@@ -142,89 +172,31 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.miPriority:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    items.sort(new PrioritySort());
-                    itemsAdapter.notifyDataSetChanged();
-                } else {
-                    Log.e(TAG, "Insufficient API level");
-                }
+                sorter = new PrioritySort();
+                reSort();
                 break;
             case R.id.miDueDate:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    items.sort(new DueDateSort());
-                    itemsAdapter.notifyDataSetChanged();
-                } else {
-                    Log.e(TAG, "Insufficient API level");
-                }
+                sorter = new DueDateSort();
+                reSort();
                 break;
             case R.id.miSmart:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    items.sort(new SmartSort());
-                    itemsAdapter.notifyDataSetChanged();
-                } else {
-                    Log.e(TAG, "Insufficient API level");
-                }
+                sorter = new SmartSort();
+                reSort();
                 break;
         }
         return true;
     }
 
+    private void reSort() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            items.sort(sorter);
+            itemsAdapter.notifyDataSetChanged();
+        } else {
+            Log.e(TAG, "Insufficient API level");
+        }
+    }
+
     private void displayMessage(String message) { //convenience method for toasts
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-
-    private void createFile() {
-        try {
-            fileOutputStream = openFileOutput(FILENAME, Context.MODE_APPEND);
-            fileOutputStream.close();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void writeTask() {
-        int index = 0;
-        try {
-            fileOutputStream = new FileOutputStream(file);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            while(items.size() > index) {
-                objectOutputStream.writeObject(items.get(index));
-            }
-            objectOutputStream.close();
-            fileOutputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void readFile() {
-        file = getFileStreamPath(FILENAME);
-        FileInputStream fileInputStream = null;
-        ObjectInputStream objectInputStream = null;
-        try {
-            fileInputStream= new FileInputStream(file);
-            objectInputStream = new ObjectInputStream(fileInputStream);
-            while(true){
-                Log.d(TAG, objectInputStream.readObject().toString());
-                addTask((Task) objectInputStream.readObject());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        /*try {
-            fileInputStream.close();
-            objectInputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-    }
-
 }

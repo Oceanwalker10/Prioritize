@@ -12,12 +12,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.prioritize.models.Task;
 
+import org.jetbrains.annotations.NotNull;
+import org.parceler.Parcels;
+
 import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class EditActivity extends AppCompatActivity {
 
+
     private static final String KEY_ITEM_TEXT = "item_detail";
+
+    private static final String TAG = "EditActivity";
+
 
     private EditText etTitle;
     private EditText etDescription;
@@ -47,11 +54,11 @@ public class EditActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(checkRequirement()) {
                     addTask();
-                    Intent intent = new Intent(EditActivity.this, MainActivity.class);
-                    intent.putExtra(MainActivity.KEY_ITEM_TEXT, pendingTask);
-                    intent.putExtra(MainActivity.KEY_ITEM_POSITION, position);
+                    Intent data = new Intent(EditActivity.this, MainActivity.class);
+                    data.putExtra(MainActivity.KEY_ITEM_TEXT, Parcels.wrap(pendingTask));
+                    data.putExtra(MainActivity.KEY_ITEM_POSITION, position);
 
-                    setResult(RESULT_OK, intent);
+                    setResult(RESULT_OK, data);
                     finish();
                 }
             }
@@ -60,7 +67,7 @@ public class EditActivity extends AppCompatActivity {
         cvDueDate.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
 
             @Override
-            public void onSelectedDayChange(CalendarView view, int year, int monthOfYear, int dayOfMonth) {
+            public void onSelectedDayChange(@NotNull CalendarView view, int year, int monthOfYear, int dayOfMonth) {
                 GregorianCalendar date = new GregorianCalendar(year,monthOfYear,dayOfMonth);
                 long timestamp = date.getTimeInMillis();
                 cvDueDate.setDate(timestamp);
@@ -83,7 +90,7 @@ public class EditActivity extends AppCompatActivity {
     }
 
     private void setTaskDetail() {
-        pendingTask = (Task) getIntent().getSerializableExtra(KEY_ITEM_TEXT);
+        pendingTask = Parcels.unwrap(getIntent().getParcelableExtra(MainActivity.KEY_ITEM_TEXT));
 
         getPositionOfTask();
 
@@ -101,11 +108,7 @@ public class EditActivity extends AppCompatActivity {
     }
 
     private boolean checkRequirement() {
-        if (etTitle.getText().toString().trim().isEmpty()) {
-            return false;
-        } else {
-            return true;
-        }
+        return !etTitle.getText().toString().trim().isEmpty();
     }
 
     private void addTask() {
