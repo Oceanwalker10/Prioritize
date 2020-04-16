@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.prioritize.adapters.ItemsAdapter;
-import com.prioritize.fileUtils.FileUtil;
 import com.prioritize.models.Task;
 import com.prioritize.models.TaskDao;
 import com.prioritize.utils.DueDateSort;
@@ -130,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
                     items.set(position, pendingTask);
                     reSort();
                     itemsAdapter.notifyItemChanged(position);
-                    FileUtil.writeTask(items);
                     displayMessage("Task updated successfully!");
                     break;
                 case REQUEST_CODE_ADD:
