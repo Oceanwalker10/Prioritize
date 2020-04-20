@@ -1,12 +1,19 @@
 package com.prioritize.models;
 
+import android.util.Log;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.parceler.Parcel;
+
+import static com.prioritize.adapters.ItemsAdapter.TAG;
 
 
 @Parcel
@@ -56,4 +63,10 @@ public class Task {
 
     public void setDueDate(Date date) { this.dueDate = date; }
 
+    public boolean overDue() {
+        Log.d(TAG, "OverDue has been called");
+        Calendar calendar = Calendar.getInstance();
+        Date currentDate = calendar.getTime();
+        return dueDate.getTime() / (1000 * 3600 * 24) - currentDate.getTime() / (1000 * 3600 * 24) < 0;
+    }
 }

@@ -1,4 +1,7 @@
 package com.prioritize.adapters;
+
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.prioritize.models.Task;
 
-import java.util.ArrayList;
 import java.util.List;
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>{
 
+
+    public static final String TAG = "ItemsAdapter";
 
     private List<Task> items;
     private OnLongClickListener longClickListener;
@@ -51,7 +55,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>{
         // Grab the item at the position
         Task item = items.get(position);
         // bind the item into the specified view holder
-        holder.bind(item.getTitle());
+        holder.bind(item);
     }
 
     // Tells the RV how many items are in the list
@@ -70,8 +74,14 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>{
             tvItem = itemView.findViewById(android.R.id.text1);
         }
 
-        public void bind(String item) {
-            tvItem.setText(item);
+        public void bind(Task item) {
+            tvItem.setText(item.getTitle());
+            if (item.overDue()) {
+                Log.d(TAG, "Overdue");
+                tvItem.setTextColor(Color.RED);
+            } else {
+                tvItem.setTextColor(Color.BLACK);
+            }
             tvItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
