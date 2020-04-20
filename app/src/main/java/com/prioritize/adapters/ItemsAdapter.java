@@ -79,6 +79,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>{
             if (item.overDue()) {
                 Log.d(TAG, "Overdue");
                 tvItem.setTextColor(Color.RED);
+            } else {
+                tvItem.setTextColor(Color.BLACK);
             }
             tvItem.setOnClickListener(new View.OnClickListener() {
                 @Override
