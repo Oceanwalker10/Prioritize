@@ -21,14 +21,14 @@
 - [x] App will prioritize the tasks based on Priority Number and Due date.
 - [x] User can view a list of priority items.
 - [X] User can successfully add and remove items from the priority list.
-- [ ] User's list of items persisted upon modification and and retrieved properly on app restart.
+- [x] User's list of items persisted upon modification and and retrieved properly on app restart.
 - [ ] User will be notified of upcoming assignments within a specified time frame. 
-- [X] User has the ability to sort in multiple ways, including manually.
+- [X] User has the ability to sort in multiple ways.
 
 
 **Optional Nice-to-have Stories**
 
-- [ ] Modify layout to make it more user-friendly.
+- [x] Modify layout to make it more user-friendly.
 - [ ] User's priority tasks will be intuitively filled into their google calendar if they have a google account. 
 
 ## Video Walkthrough
