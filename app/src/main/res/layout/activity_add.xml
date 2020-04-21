@@ -20,6 +20,21 @@
         android:hint="@string/name_of_task"
         android:inputType="textPersonName" />
 
+    <TextView
+        android:id="@+id/tvDueDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etDescription"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="0dp"
+        android:layout_toEndOf="@+id/tvPriorityNum"
+        android:ems="10"
+        android:linksClickable="false"
+        android:text="@string/due_date"
+        android:textAlignment="center"
+        android:textSize="24sp" />
+
     <EditText
         android:id="@+id/etDescription"
         android:layout_width="match_parent"
@@ -125,23 +140,5 @@
         android:backgroundTint="#6495ED"
         android:contentDescription="@string/go_back_to_home"
         app:srcCompat="?attr/homeAsUpIndicator" />
-
-    <TextView
-        android:id="@+id/tvDueDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btnAddTask"
-        android:layout_below="@+id/etDescription"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="408dp"
-        android:layout_toEndOf="@+id/tvPriorityNum"
-        android:ems="10"
-        android:hint="@string/due_date"
-        android:linksClickable="false"
-        android:textAlignment="center"
-        android:textSize="24sp" />
 
 </RelativeLayout>
