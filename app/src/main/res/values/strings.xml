@@ -14,4 +14,6 @@
     <string name="Priority">Priority</string>
     <string name="update">Update</string>
     <string name="add">Add</string>
+    <string name="add_task">Add Task</string>
+    <string name="go_back_to_home">go back to Home</string>
 </resources>
