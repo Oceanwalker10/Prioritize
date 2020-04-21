@@ -2,7 +2,6 @@ package com.prioritize;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -27,6 +26,7 @@ import com.prioritize.utils.SmartSort;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -196,12 +196,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void reSort() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            items.sort(sorter);
-            itemsAdapter.notifyDataSetChanged();
-        } else {
-            Log.e(TAG, "Insufficient API level");
-        }
+        Collections.sort(items, sorter);
+        itemsAdapter.notifyDataSetChanged();
     }
 
     private void displayMessage(String message) { //convenience method for toasts

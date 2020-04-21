@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,10 +22,7 @@ import org.parceler.Parcels;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 public class AddActivity extends AppCompatActivity {
 
@@ -33,7 +31,7 @@ public class AddActivity extends AppCompatActivity {
     private EditText etTitle;
     private EditText etDescription;
     private RadioGroup rgPriority;
-    private EditText etDueDate;
+    private TextView tvDueDate;
     private Button btnAddTask;
     private ImageButton ivHome;
     private int year, month, day;
@@ -48,7 +46,7 @@ public class AddActivity extends AppCompatActivity {
         etTitle = findViewById(R.id.etTitle);
         etDescription = findViewById(R.id.etDescription);
         rgPriority = findViewById(R.id.rgPriority);
-        etDueDate = findViewById(R.id.etDueDate);
+        tvDueDate = findViewById(R.id.tvDueDate);
         btnAddTask = findViewById(R.id.btnAddTask);
         ivHome = findViewById(R.id.ivHome);
 
@@ -65,11 +63,11 @@ public class AddActivity extends AppCompatActivity {
         final DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                etDueDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                tvDueDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
             }
         }, year, month, day);
 
-        etDueDate.setOnClickListener(new View.OnClickListener() {
+        tvDueDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 datePickerDialog.show();
@@ -84,12 +82,12 @@ public class AddActivity extends AppCompatActivity {
                     displayMessage("Task must have a title");
                 } else if (radioPriority == 0) {
                     displayMessage("Task must have a priority number");
-                } else if (etDueDate.getText().toString().trim().isEmpty()) {
+                } else if (tvDueDate.getText().toString().trim().isEmpty()) {
                     displayMessage("Task must have a due date");
                 } else {
                     Task task = new Task();
                     try {
-                        task.setDueDate(new SimpleDateFormat("dd/MM/yyyy").parse(etDueDate.getText().toString().trim()));
+                        task.setDueDate(new SimpleDateFormat("dd/MM/yyyy").parse(tvDueDate.getText().toString().trim()));
                         if (task.overDue()) {
                             displayMessage("Due date has already passed!");
                             return;

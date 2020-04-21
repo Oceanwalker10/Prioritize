@@ -53,10 +53,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:layout_marginStart="267dp"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp"
+        android:layout_toEndOf="@+id/ivHome"
         android:backgroundTint="#6495ED"
-        android:text="Add Task"
+        android:text="@string/add_task"
         android:textStyle="bold" />
 
     <RadioGroup
@@ -121,22 +123,25 @@
         android:layout_marginStart="6dp"
         android:layout_marginBottom="5dp"
         android:backgroundTint="#6495ED"
-        android:contentDescription="go back to Home"
+        android:contentDescription="@string/go_back_to_home"
         app:srcCompat="?attr/homeAsUpIndicator" />
 
-    <EditText
-        android:id="@+id/etDueDate"
+    <TextView
+        android:id="@+id/tvDueDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_above="@+id/btnAddTask"
+        android:layout_below="@+id/etDescription"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="243dp"
+        android:layout_marginTop="18dp"
         android:layout_marginEnd="20dp"
+        android:layout_marginBottom="408dp"
         android:layout_toEndOf="@+id/tvPriorityNum"
-        android:editable="false"
         android:ems="10"
         android:hint="@string/due_date"
-        android:inputType="date" />
+        android:linksClickable="false"
+        android:textAlignment="center"
+        android:textSize="24sp" />
 
 </RelativeLayout>
