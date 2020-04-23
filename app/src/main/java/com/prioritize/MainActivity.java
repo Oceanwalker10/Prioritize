@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        itemsAdapter = new ItemsAdapter(items, onLongClickListener, onClickListener);
+        itemsAdapter = new ItemsAdapter(items, onLongClickListener, onClickListener, getApplicationContext());
         rvItems.setAdapter(itemsAdapter);
         rvItems.setLayoutManager(new LinearLayoutManager(this));
 
