@@ -88,7 +88,7 @@ public class AddActivity extends AppCompatActivity {
                     Task task = new Task();
                     try {
                         task.setDueDate(new SimpleDateFormat("dd/MM/yyyy").parse(tvDueDate.getText().toString().trim()));
-                        if (task.overDue()) {
+                        if (task.daysToDue() < 0) {
                             displayMessage("Due date has already passed!");
                             return;
                         }

@@ -63,10 +63,10 @@ public class Task {
 
     public void setDueDate(Date date) { this.dueDate = date; }
 
-    public boolean overDue() {
+    public int daysToDue() {
         Log.d(TAG, "OverDue has been called");
         Calendar calendar = Calendar.getInstance();
         Date currentDate = calendar.getTime();
-        return dueDate.getTime() / (1000 * 3600 * 24) - currentDate.getTime() / (1000 * 3600 * 24) < 0;
+        return (int) (dueDate.getTime() / (1000 * 3600 * 24) - currentDate.getTime() / (1000 * 3600 * 24));
     }
 }

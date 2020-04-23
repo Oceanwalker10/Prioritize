@@ -1,15 +1,19 @@
 package com.prioritize.adapters;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.prioritize.R;
 import com.prioritize.models.Task;
 
 import java.util.List;
@@ -21,6 +25,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>{
     private List<Task> items;
     private OnLongClickListener longClickListener;
     private OnClickListener clickListener;
+    Context context;
+    //Ugly, but time is an issue
+    private boolean redToasted = true;
+    private boolean yellowToasted = true;
 
     public interface OnClickListener {
         void onItemClicked(int position);
@@ -34,10 +42,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>{
         this.items = items;
     }
 
-    public ItemsAdapter(List<Task> items, OnLongClickListener longClickListener, OnClickListener clickListener) {
+    public ItemsAdapter(List<Task> items, OnLongClickListener longClickListener, OnClickListener clickListener, Context context) {
         this.items = items;
         this.longClickListener = longClickListener;
         this.clickListener = clickListener;
+        this.context = context;
     }
 
     @NonNull
@@ -58,6 +67,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>{
         holder.bind(item);
     }
 
+    private void displayMessage(String message) { //convenience method for toasts
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
     // Tells the RV how many items are in the list
     @Override
     public int getItemCount() {
@@ -76,11 +89,25 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>{
 
         public void bind(Task item) {
             tvItem.setText(item.getTitle());
-            if (item.overDue()) {
-                Log.d(TAG, "Overdue");
-                tvItem.setTextColor(Color.RED);
+            Log.d(TAG, "Days to due: " + item.daysToDue());
+            if (item.daysToDue() < 0) {
+                if (redToasted) {
+                    displayMessage("Red items are overdue!");
+                    redToasted = false;
+                }
+
+                tvItem.setTextColor(Color.WHITE);
+                tvItem.setBackgroundColor(Color.RED);
+            } else if (item.daysToDue() < 2) {
+                if (yellowToasted) {
+                    displayMessage("Yellow items are upcoming soon");
+                    yellowToasted = false;
+                }
+                tvItem.setTextColor(Color.BLACK);
+                tvItem.setBackgroundColor(Color.YELLOW);
             } else {
                 tvItem.setTextColor(Color.BLACK);
+                tvItem.setBackgroundColor(ContextCompat.getColor(context, R.color.winBackground));
             }
             tvItem.setOnClickListener(new View.OnClickListener() {
                 @Override
