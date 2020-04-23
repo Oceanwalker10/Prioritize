@@ -29,7 +29,7 @@
 **Optional Nice-to-have Stories**
 
 - [x] Modify layout to make it more user-friendly.
-- [ ] User's priority tasks will be intuitively filled into their google calendar if they have a google account. 
+- [x] User's priority tasks will be intuitively filled into their google calendar if they have a google account. 
 
 ## Video Walkthrough
 
