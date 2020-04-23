@@ -93,30 +93,6 @@ GIFs created with [LiceCap](http://www.cockos.com/licecap/).
    | id            | Number   | Primary Key(for if we do Google Calendar) |
    |     |    |  |
 
-
-
-
-
-> Read more about sequence-diagrams here: http://bramp.github.io/js-sequence-diagrams/
-
-Project Timeline
----
-```mermaid
-gantt
-    title A Gantt Diagram
-
-    section Section
-    A task           :a1, 2014-01-01, 30d
-    Another task     :after a1  , 20d
-    section Another
-    Task in sec      :2014-01-12  , 12d
-    anther task      : 24d
-```
 [Link to GitHub](https://github.com/Oceanwalker10/Prioritize)
-## Appendix and FAQ
-
-:::info
-**Find this document incomplete?** Leave a comment!
-:::
 
 ###### tags: `Group Project` `Documentation`
