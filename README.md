@@ -35,14 +35,17 @@
 
 Here's a walkthrough of implemented user stories:
 
+**Milestone 1 Gif**
 <img src='Prioritize_v1.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
-
 
 **Milestone 2 Gif**
 <img src='prioritize gif.gif' title='Video Walkthrough' width='240' height='480' alt='Video Walkthrough' />
 
 **Milestone 3 Gif**
 <img src='Walkthrough 3.gif' title='Video Walkthrough' width='240' height='480' alt='Video Walkthrough' />
+
+**Milestone 4 Gif**
+<img src='Prioritize_v4.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIFs created with [LiceCap](http://www.cockos.com/licecap/).
 ### 2. Screen Archetypes
