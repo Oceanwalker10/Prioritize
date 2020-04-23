@@ -2,6 +2,7 @@ package com.prioritize;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -15,6 +16,7 @@ import com.prioritize.models.Task;
 import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -28,6 +30,7 @@ public class EditActivity extends AppCompatActivity {
     private CalendarView cvDueDate;
     private Button btnUpdate;
     private Task pendingTask;
+    private Button btnAddToCalendar;
     private int position;
 
     @Override
@@ -40,6 +43,7 @@ public class EditActivity extends AppCompatActivity {
         npPriority = findViewById(R.id.npPriority);
         btnUpdate = findViewById(R.id.btnUpdate);
         cvDueDate = findViewById(R.id.cvDueDate);
+        btnAddToCalendar = findViewById(R.id.btnAddToCalendar);
 
         configureNumberPicker();
         setTaskDetail();
@@ -69,6 +73,29 @@ public class EditActivity extends AppCompatActivity {
                 cvDueDate.setDate(timestamp);
             }
         });
+
+        btnAddToCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addTask();
+                setCalendarEvent();
+            }
+        });
+    }
+
+    private void setCalendarEvent() {
+        Intent calIntent = new Intent(Intent.ACTION_INSERT);
+        calIntent.setType("vnd.android.cursor.item/event");
+        calIntent.putExtra(CalendarContract.Events.TITLE, pendingTask.getTitle());
+        calIntent.putExtra(CalendarContract.Events.DESCRIPTION, pendingTask.getDescription());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(pendingTask.getDueDate());
+        GregorianCalendar calDate = new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        calIntent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, true);
+        calIntent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                calDate.getTimeInMillis());
+
+        startActivity(calIntent);
     }
 
     NumberPicker.OnValueChangeListener onValueChangeListener =
