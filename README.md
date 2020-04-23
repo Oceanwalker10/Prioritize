@@ -22,7 +22,7 @@
 - [x] User can view a list of priority items.
 - [X] User can successfully add and remove items from the priority list.
 - [x] User's list of items persisted upon modification and and retrieved properly on app restart.
-- [ ] User will be notified of upcoming assignments within a specified time frame. 
+- [x] User will be notified of upcoming assignments within a specified time frame. 
 - [X] User has the ability to sort in multiple ways.
 
 
@@ -92,27 +92,6 @@ GIFs created with [LiceCap](http://www.cockos.com/licecap/).
    | calendarDate  | Date     | Date at which the task needs to be completed|
    | id            | Number   | Primary Key(for if we do Google Calendar) |
    |     |    |  |
-
-### Networking
-
-##### Google Calendar API
-- Base URL - [https://www.googleapis.com/calendar/v3](https://www.googleapis.com/calendar/v3)
-
-   METHOD |HTTP Verb | Endpoint | Description
-   ----------|----------|----------|------------
-    delete|`DELETE` |/calendars/calendarId/events/eventId| Deletes an event.|
-    get|`GET `|/calendars/calendarId/events/eventId|Returns an event.|
-   import |`POST`| /calendars/calendarId/events/import|Imports an event. This operation is used to add a private copy of an existing event to a calendar.|
-    insert|`POST`|/calendars/calendarId/events| Creates an event.|
-    instances|`GET`|/calendars/calendarId/events/eventId/instances|Returns instances of the specified recurring event.|
-  list  |`GET`|  /calendars/calendarId/events|Returns events on the specified calendar.|
-    move|`POST`|/calendars/calendarId/events/eventId/move|	Moves an event to another calendar, i.e. changes an event's organizer.Required query parameters: destination|
-    patch|`PATCH`|/calendars/calendarId/events/eventId|Updates an event. This method supports patch semantics. The field values you specify replace the existing values. Fields that you don’t specify in the request remain unchanged. Array fields, if specified, overwrite the existing arrays; this discards any previous array elements.|
-    quickAdd|`POST`|/calendars/calendarId/events/quickAdd|	Creates an event based on a simple text string.Required query parameters: text|
-    update|`PUT`|/calendars/calendarId/events/eventId| Updates an event.|
-    watch|`POST`|/calendars/calendarId/events/watch|	Watch for changes to Events resources.|
-
-    ``
 
 
 
